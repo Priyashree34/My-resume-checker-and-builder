@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ResumeAI — ATS Analyzer & Resume Builder</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+
+<!-- ══ TOPBAR ════════════════════════════════════════════════════════════════ -->
+<nav class="topbar">
+  <a class="topbar-logo" href="#" onclick="showPage('home');return false">
+    <div class="topbar-logo-icon">AI</div>
+    <div class="topbar-logo-text">ResumeAI</div>
+  </a>
+  <div class="topbar-nav">
+    <button class="topbar-btn" data-page="checker" onclick="showPage('checker')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Resume Checker
+    </button>
+    <button class="topbar-btn" data-page="builder" onclick="showPage('builder')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Resume Builder
+    </button>
+  </div>
+</nav>
+
+<!-- ══ API KEY BAR ════════════════════════════════════════════════════════════ -->
+<div class="apibar" id="apibar">
+  <span class="apibar-label">🔑 Groq API Key</span>
+  <input type="password" class="apibar-input" id="apiKeyInput" placeholder="gsk_..."/>
+  <span class="apibar-status" id="apiKeyStatus">Paste your key</span>
+  <span class="apibar-link">
+    Free key (no card) →
+    <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a>
+  </span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PAGE: HOME
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page active" id="page-home">
+  <div id="page-home-inner" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:90px 24px 60px;text-align:center;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(79,142,247,0.12),transparent)">
+
+    <div class="home-eyebrow">
+      <span></span>
+      Powered by Groq · Llama 3.3 70B · Real TF-IDF NLP
+    </div>
+
+    <h1 class="home-h1">
+      Resume Analyzer<br/>
+      <span>&amp; Builder</span>
+    </h1>
+
+    <p class="home-sub">
+      Get your ATS match score, find missing keywords, fix weak bullet points,
+      and generate a complete job-ready resume — all in one place.
+    </p>
+
+    <div class="home-cards">
+
+      <!-- Resume Checker Card -->
+      <div class="home-card" onclick="showPage('checker')">
+        <div class="home-card-icon blue">🔍</div>
+        <h3>Resume Checker</h3>
+        <p>Paste your resume and a job description. Get your ATS score, keyword gaps, and AI-powered improvement suggestions.</p>
+        <div class="home-card-features">
+          <div class="home-card-feature">Real TF-IDF + cosine similarity scoring</div>
+          <div class="home-card-feature">Missing keywords ranked by importance</div>
+          <div class="home-card-feature">Bullet point rewrites with metrics</div>
+          <div class="home-card-feature">Section feedback + ATS warnings</div>
+          <div class="home-card-feature">Interview question predictions</div>
+        </div>
+        <div class="home-card-cta">
+          Analyze my resume
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+
+      <!-- Resume Builder Card -->
+      <div class="home-card" onclick="showPage('builder')" style="--accentGlow:rgba(34,197,94,0.12)">
+        <div class="home-card-icon green">✨</div>
+        <h3>Resume Builder</h3>
+        <p>Fill in your details and job description. AI generates a complete, ATS-optimized, professional resume ready to download.</p>
+        <div class="home-card-features">
+          <div class="home-card-feature">AI-written professional summary</div>
+          <div class="home-card-feature">Strong action verbs + quantified metrics</div>
+          <div class="home-card-feature">Job description keyword injection</div>
+          <div class="home-card-feature">Skills, projects, certifications included</div>
+          <div class="home-card-feature">One-click PDF download</div>
+        </div>
+        <div class="home-card-cta" style="color:var(--green)">
+          Build my resume
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="home-api-note">
+      🔑 Requires a free Groq API key — no credit card, works everywhere in India.
+      Get yours in 2 min at
+      <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a>
+      → Sign up with Google → Create API Key → Copy & paste above.
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PAGE: CHECKER
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page tool-page" id="page-checker">
+  <div class="checker-wrap">
+
+    <div class="checker-header">
+      <h2>ATS Resume Checker</h2>
+      <p>Paste your resume and the job description — get your ATS match score instantly</p>
+    </div>
+
+    <div id="checkerAlert" class="alert" style="display:none"></div>
+
+    <div class="checker-inputs">
+      <div class="input-box">
+        <div class="input-box-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Your Resume
+        </div>
+        <textarea id="resumeInput" placeholder="Paste your full resume text here.
+
+Include all sections:
+• Name, contact info
+• Professional summary / objective
+• Work experience with bullet points
+• Skills &amp; technologies
+• Education
+• Certifications / projects
+
+The more complete your resume, the more accurate the analysis."></textarea>
+      </div>
+
+      <div class="input-box">
+        <div class="input-box-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Job Description
+        </div>
+        <textarea id="jdInput" placeholder="Paste the full job description here.
+
+Include:
+• Job title and company
+• Required qualifications
+• Key responsibilities
+• Preferred skills
+• Any tech stack mentioned
+
+The full JD gives the most accurate ATS match score."></textarea>
+      </div>
+    </div>
+
+    <div class="checker-cta">
+      <button class="btn btn-primary btn-lg" id="checkBtn" onclick="runChecker()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Check ATS Match
+      </button>
+      <div style="font-size:12px;color:var(--text3);margin-top:12px">
+        Uses real TF-IDF + cosine similarity NLP · then Groq AI (Llama 3.3 70B) for deep analysis
+      </div>
+    </div>
+
+    <!-- Results appear below the inputs -->
+    <div id="results-section"></div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PAGE: BUILDER
+════════════════════════════════════════════════════════════════════════════ -->
+<div class="page tool-page" id="page-builder">
+  <div class="builder-wrap">
+
+    <div class="builder-header">
+      <h2>AI Resume Builder</h2>
+      <p>Fill in your details — AI generates a complete, ATS-optimized resume ready to download as PDF</p>
+    </div>
+
+    <div id="builderAlert" class="alert" style="display:none"></div>
+
+    <!-- Personal Info -->
+    <div class="bsection">
+      <div class="bsection-title">
+        <div class="bicon" style="background:rgba(79,142,247,0.12)">👤</div>
+        Personal Information
+      </div>
+      <div class="g2">
+        <div class="field"><label>Full Name *</label><input type="text" id="bName" placeholder="Rahul Sharma"/></div>
+        <div class="field"><label>Target Job Title *</label><input type="text" id="bTitle" placeholder="Software Engineer"/></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Email Address</label><input type="text" id="bEmail" placeholder="rahul@email.com"/></div>
+        <div class="field"><label>Phone Number</label><input type="text" id="bPhone" placeholder="+91 98765 43210"/></div>
+      </div>
+      <div class="g3">
+        <div class="field"><label>Location</label><input type="text" id="bLoc" placeholder="Jaipur, Rajasthan"/></div>
+        <div class="field"><label>LinkedIn URL</label><input type="text" id="bLinkedin" placeholder="linkedin.com/in/rahul"/></div>
+        <div class="field"><label>GitHub / Portfolio</label><input type="text" id="bGithub" placeholder="github.com/rahul"/></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Years of Experience</label><input type="text" id="bYears" placeholder="3"/></div>
+      </div>
+    </div>
+
+    <!-- Work Experience -->
+    <div class="bsection">
+      <div class="bsection-title">
+        <div class="bicon" style="background:rgba(168,85,247,0.12)">💼</div>
+        Work Experience
+      </div>
+      <div id="expList"></div>
+      <button class="btn btn-ghost btn-sm" onclick="addExp()">+ Add Another Experience</button>
+    </div>
+
+    <!-- Education -->
+    <div class="bsection">
+      <div class="bsection-title">
+        <div class="bicon" style="background:rgba(34,197,94,0.12)">🎓</div>
+        Education
+      </div>
+      <div class="g2">
+        <div class="field"><label>Degree / Course</label><input type="text" id="bDegree" placeholder="B.Tech Computer Science"/></div>
+        <div class="field"><label>University / College</label><input type="text" id="bSchool" placeholder="Rajasthan Technical University"/></div>
+      </div>
+      <div class="g2">
+        <div class="field"><label>Graduation Year</label><input type="text" id="bYear" placeholder="2023"/></div>
+        <div class="field"><label>CGPA / Percentage (optional)</label><input type="text" id="bGpa" placeholder="8.4 / 10 or 82%"/></div>
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="bsection">
+      <div class="bsection-title">
+        <div class="bicon" style="background:rgba(245,158,11,0.12)">⚡</div>
+        Skills &amp; Technologies
+      </div>
+      <div class="field">
+        <label>Your Skills (comma-separated)</label>
+        <textarea id="bSkills" rows="3" placeholder="Python, Django, React, PostgreSQL, AWS, Docker, Git, REST APIs, Machine Learning, TensorFlow, SQL, Linux"></textarea>
+      </div>
+      <div class="field">
+        <label>Certifications (optional)</label>
+        <input type="text" id="bCerts" placeholder="AWS Solutions Architect Associate, Google Cloud Professional, etc."/>
+      </div>
+    </div>
+
+    <!-- Projects -->
+    <div class="bsection">
+      <div class="bsection-title">
+        <div class="bicon" style="background:rgba(239,68,68,0.12)">🚀</div>
+        Notable Projects (optional — highly recommended)
+      </div>
+      <div class="field">
+        <label>Describe your key projects (one per line)</label>
+        <textarea id="bProjects" rows="4" placeholder="E-commerce platform with Django + React serving 10K daily users&#10;ML fraud detection model achieving 94% accuracy using scikit-learn&#10;Open-source CLI automation tool with 1.5K GitHub stars"></textarea>
+      </div>
+    </div>
+
+    <!-- Target JD -->
+    <div class="bsection">
+      <div class="bsection-title">
+        <div class="bicon" style="background:rgba(79,142,247,0.12)">🎯</div>
+        Target Job Description
+        <span style="font-size:11px;font-weight:400;color:var(--text2);margin-left:8px">(strongly recommended for keyword optimization)</span>
+      </div>
+      <div class="alert alert-info" style="margin-bottom:14px;font-size:13px">
+        Pasting the JD lets AI inject the exact keywords and skills the employer is looking for — significantly improving your ATS score.
+      </div>
+      <div class="field">
+        <label>Paste Job Description</label>
+        <textarea id="bJD" rows="6" placeholder="Paste the full job description here for maximum ATS optimization..."></textarea>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-full btn-lg" id="buildBtn" onclick="runBuilder()">
+      ✨ Generate ATS-Optimized Resume
+    </button>
+    <div style="font-size:12px;color:var(--text3);text-align:center;margin-top:10px">
+      AI will write your summary, enhance all bullet points, inject keywords, and build a PDF-ready resume
+    </div>
+
+    <!-- Output -->
+    <div id="builderOutput" style="display:none;margin-top:32px"></div>
+
+  </div>
+</div>
+
+<script src="js/state.js"></script>
+<script src="js/nlp.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
