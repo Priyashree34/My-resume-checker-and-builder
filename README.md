@@ -64,6 +64,7 @@ resumeai/
 ### 1. Clone the repo
 bash
 git clone https://github.com/Priyashree34/My-resume-checker-and-builder.git
+
 cd My-resume-checker-and-builder
 
 ### 2. Open in browser
